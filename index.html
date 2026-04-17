@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Interés Compuesto</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --border: #e4e0d8;
+    --text: #1a1916;
+    --muted: #7a776e;
+    --green: #1a7a5e;
+    --green-light: #e8f5f0;
+    --green-mid: #2fa882;
+    --blue-light: #ddeaf7;
+    --blue-mid: #4a90d9;
+    --accent: #c8a96e;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  header {
+    max-width: 720px;
+    margin: 0 auto 3rem;
+    text-align: center;
+  }
+
+  header .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  header p {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .ctrl {
+    margin-bottom: 1.5rem;
+  }
+
+  .ctrl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .ctrl-header label {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .ctrl-header .val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--green);
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--green);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--green);
+    cursor: pointer;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+
+  .stat .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .stat .num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .stat.highlight .num {
+    color: var(--green);
+  }
+
+  .stat .sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 280px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 1rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .insight {
+    background: var(--green-light);
+    border: 1px solid #b8e0d4;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .insight p {
+    font-size: 14px;
+    color: var(--green);
+    line-height: 1.6;
+  }
+
+  .insight strong {
+    font-weight: 500;
+  }
+
+  .multiplier {
+    display: inline-block;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    background: var(--green);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 480px) {
+    .stats { grid-template-columns: 1fr; }
+    .card { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Educación financiera</p>
+  <h1>El poder del<br>interés compuesto</h1>
+  <p>Descubre cómo tu dinero crece exponencialmente cuando el tiempo trabaja para ti.</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <p class="card-title">Parámetros</p>
+
+    <div class="ctrl">
+      <div class="ctrl-header">
+        <label>Capital inicial</label>
+        <span class="val" id="ini-v">10.000 €</span>
+      </div>
+      <input type="range" id="ini" min="0" max="50000" step="1000" value="10000">
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-header">
+        <label>Aportación mensual</label>
+        <span class="val" id="apo-v">200 €</span>
+      </div>
+      <input type="range" id="apo" min="0" max="1000" step="50" value="200">
+    </div>
+
+    <div class="ctrl">
+      <div class="ctrl-header">
+        <label>Rentabilidad anual estimada</label>
+        <span class="val" id="rate-v">10%</span>
+      </div>
+      <input type="range" id="rate" min="1" max="20" step="0.5" value="10">
+    </div>
+
+    <div class="ctrl" style="margin-bottom:0">
+      <div class="ctrl-header">
+        <label>Horizonte temporal</label>
+        <span class="val" id="yrs-v">20 años</span>
+      </div>
+      <input type="range" id="yrs" min="5" max="40" step="1" value="20">
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Resultado</p>
+
+    <div class="stats">
+      <div class="stat highlight">
+        <p class="lbl">Capital final</p>
+        <p class="num" id="s-total">—</p>
+      </div>
+      <div class="stat">
+        <p class="lbl">Lo que aportaste</p>
+        <p class="num" id="s-aportado">—</p>
+      </div>
+      <div class="stat">
+        <p class="lbl">Intereses ganados</p>
+        <p class="num" id="s-intereses">—</p>
+        <p class="sub" id="s-ratio">—</p>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#4a90d9"></span>Aportado</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#1a7a5e"></span>Intereses</span>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="chart" role="img" aria-label="Evolución del capital aportado vs intereses generados a lo largo del tiempo"></canvas>
+    </div>
+
+    <div class="insight">
+      <p id="insight-text">—</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Simulación orientativa. No tiene en cuenta inflación, fiscalidad ni comisiones del producto.</p>
+  <p style="margin-top:4px">Rentabilidades pasadas no garantizan rentabilidades futuras.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const fmt = v => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(v);
+const fmtShort = v => v >= 1000 ? (v/1000).toFixed(0) + 'k €' : v + ' €';
+
+function calcular(ini, apo, rate, yrs) {
+  const r = rate / 100 / 12;
+  const labels = [], totalArr = [], aportadoArr = [], interesesArr = [];
+  for (let y = 0; y <= yrs; y++) {
+    const n = y * 12;
+    const val = r === 0 ? ini + apo * n : ini * Math.pow(1+r, n) + apo * (Math.pow(1+r,n)-1)/r;
+    const ap = ini + apo * n;
+    labels.push(y === 0 ? 'Hoy' : 'Año ' + y);
+    totalArr.push(Math.round(val));
+    aportadoArr.push(Math.round(ap));
+    interesesArr.push(Math.round(val - ap));
+  }
+  return { labels, totalArr, aportadoArr, interesesArr };
+}
+
+let chart;
+
+function update() {
+  const ini = +document.getElementById('ini').value;
+  const apo = +document.getElementById('apo').value;
+  const rate = +document.getElementById('rate').value;
+  const yrs = +document.getElementById('yrs').value;
+
+  document.getElementById('ini-v').textContent = fmt(ini);
+  document.getElementById('apo-v').textContent = fmt(apo);
+  document.getElementById('rate-v').textContent = rate.toFixed(1).replace('.0','') + '%';
+  document.getElementById('yrs-v').textContent = yrs + ' años';
+
+  const d = calcular(ini, apo, rate, yrs);
+  const finalVal = d.totalArr[d.totalArr.length-1];
+  const finalAp = d.aportadoArr[d.aportadoArr.length-1];
+  const finalInt = d.interesesArr[d.interesesArr.length-1];
+  const ratio = finalAp > 0 ? (finalInt / finalAp) : 0;
+  const mult = finalAp > 0 ? (finalVal / finalAp).toFixed(1) : '—';
+
+  document.getElementById('s-total').textContent = fmt(finalVal);
+  document.getElementById('s-aportado').textContent = fmt(finalAp);
+  document.getElementById('s-intereses').textContent = fmt(finalInt);
+  document.getElementById('s-ratio').textContent = ratio > 0 ? (ratio * 100).toFixed(0) + '% del capital final' : '';
+
+  const halfIdx = Math.floor(d.totalArr.length / 2);
+  const halfVal = d.totalArr[halfIdx];
+  document.getElementById('insight-text').innerHTML =
+    `En ${yrs} años tu dinero se multiplica <span class="multiplier">×${mult}</span>. 
+     De los ${fmt(finalVal)} totales, el mercado te aporta ${fmt(finalInt)} — 
+     ${ratio > 1 ? 'más del doble' : 'más'} de lo que tú pusiste. 
+     A mitad del camino (año ${Math.floor(yrs/2)}) llevarías ${fmt(halfVal)}, 
+     y la segunda mitad del período genera más riqueza que la primera.`;
+
+  if (chart) {
+    chart.data.labels = d.labels;
+    chart.data.datasets[0].data = d.aportadoArr;
+    chart.data.datasets[1].data = d.interesesArr;
+    chart.update();
+  } else {
+    chart = new Chart(document.getElementById('chart'), {
+      type: 'bar',
+      data: {
+        labels: d.labels,
+        datasets: [
+          {
+            label: 'Aportado',
+            data: d.aportadoArr,
+            backgroundColor: '#4a90d9',
+            stack: 's'
+          },
+          {
+            label: 'Intereses',
+            data: d.interesesArr,
+            backgroundColor: '#1a7a5e',
+            stack: 's'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => ' ' + fmt(ctx.raw),
+              footer: items => {
+                const total = items.reduce((s, i) => s + i.raw, 0);
+                return 'Total: ' + fmt(total);
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            ticks: { autoSkip: true, maxTicksLimit: 10, color: '#7a776e', font: { size: 11 } },
+            grid: { display: false }
+          },
+          y: {
+            stacked: true,
+            ticks: {
+              callback: v => fmtShort(v),
+              color: '#7a776e',
+              font: { size: 11 }
+            },
+            grid: { color: '#e4e0d8', lineWidth: 0.5 }
+          }
+        }
+      }
+    });
+  }
+}
+
+['ini','apo','rate','yrs'].forEach(id => document.getElementById(id).addEventListener('input', update));
+update();
+</script>
+</body>
+</html>
