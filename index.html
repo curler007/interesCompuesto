@@ -16,8 +16,6 @@
     --muted: #7a776e;
     --green: #1a7a5e;
     --green-light: #e8f5f0;
-    --green-mid: #2fa882;
-    --blue-light: #ddeaf7;
     --blue-mid: #4a90d9;
     --accent: #c8a96e;
   }
@@ -27,12 +25,13 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding: 2rem 1rem 4rem;
+    padding: 1.5rem 1rem 5rem;
+    -webkit-text-size-adjust: 100%;
   }
 
   header {
     max-width: 720px;
-    margin: 0 auto 3rem;
+    margin: 0 auto 2rem;
     text-align: center;
   }
 
@@ -42,22 +41,22 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
   }
 
   header h1 {
     font-family: 'DM Serif Display', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-size: clamp(1.8rem, 7vw, 3.2rem);
     font-weight: 400;
     line-height: 1.15;
     color: var(--text);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
 
   header p {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--muted);
-    line-height: 1.7;
+    line-height: 1.6;
     max-width: 500px;
     margin: 0 auto;
   }
@@ -71,8 +70,13 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 480px) {
+    .card { padding: 2rem; }
+    body { padding: 2rem 1.5rem 5rem; }
   }
 
   .card-title {
@@ -81,62 +85,92 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
   }
 
-  .ctrl {
-    margin-bottom: 1.5rem;
-  }
+  /* ── Controles ── */
+  .ctrl { margin-bottom: 1.5rem; }
+  .ctrl:last-child { margin-bottom: 0; }
 
   .ctrl-header {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 8px;
   }
 
   .ctrl-header label {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--text);
     font-weight: 400;
+    flex-shrink: 0;
   }
 
-  .ctrl-header .val {
+  .editable-val {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    transition: border-color 0.15s;
+  }
+
+  .editable-val:focus-within {
+    border-color: var(--green);
+  }
+
+  .editable-val input[type="text"] {
     font-family: 'DM Serif Display', serif;
     font-size: 18px;
     color: var(--green);
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 80px;
+    text-align: right;
+    /* Teclado numérico en móvil */
+    inputmode: numeric;
   }
 
+  .editable-val input[type="text"].wide { width: 100px; }
+  .editable-val input[type="text"].narrow { width: 48px; }
+
+  .editable-val .unit {
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ── Slider: thumb grande para dedos ── */
   input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
-    height: 3px;
+    height: 4px;
     background: var(--border);
     border-radius: 2px;
     outline: none;
     cursor: pointer;
+    touch-action: manipulation;
   }
 
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--green);
     border: 3px solid var(--surface);
     box-shadow: 0 0 0 1px var(--green);
     cursor: pointer;
-    transition: transform 0.15s;
-  }
-
-  input[type="range"]::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
   }
 
   input[type="range"]::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--green);
     border: 3px solid var(--surface);
@@ -144,55 +178,68 @@
     cursor: pointer;
   }
 
+  /* ── Stats: 1 col en móvil, 3 en desktop ── */
   .stats {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 480px) {
+    .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
   }
 
   .stat {
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 1rem 1.25rem;
+    padding: 0.85rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @media (min-width: 480px) {
+    .stat { display: block; padding: 1rem 1.25rem; }
   }
 
   .stat .lbl {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--muted);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 6px;
+    letter-spacing: 0.07em;
+  }
+
+  @media (min-width: 480px) {
+    .stat .lbl { margin-bottom: 6px; }
   }
 
   .stat .num {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     color: var(--text);
     line-height: 1.2;
   }
 
-  .stat.highlight .num {
-    color: var(--green);
-  }
+  .stat.highlight .num { color: var(--green); }
 
   .stat .sub {
     font-size: 11px;
     color: var(--muted);
-    margin-top: 4px;
+    margin-top: 2px;
+    display: none;
   }
 
-  .chart-wrap {
-    position: relative;
-    width: 100%;
-    height: 280px;
+  @media (min-width: 480px) {
+    .stat .sub { display: block; }
   }
 
+  /* ── Gráfico ── */
   .legend {
     display: flex;
-    gap: 20px;
-    margin-bottom: 1rem;
+    gap: 16px;
+    margin-bottom: 0.75rem;
   }
 
   .legend-item {
@@ -207,47 +254,50 @@
     width: 10px;
     height: 10px;
     border-radius: 2px;
+    flex-shrink: 0;
   }
 
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 220px;
+  }
+
+  @media (min-width: 480px) {
+    .chart-wrap { height: 280px; }
+  }
+
+  /* ── Insight ── */
   .insight {
     background: var(--green-light);
     border: 1px solid #b8e0d4;
     border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
   }
 
   .insight p {
     font-size: 14px;
     color: var(--green);
-    line-height: 1.6;
-  }
-
-  .insight strong {
-    font-weight: 500;
+    line-height: 1.65;
   }
 
   .multiplier {
     display: inline-block;
     font-family: 'DM Serif Display', serif;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     background: var(--green);
     color: #fff;
-    padding: 2px 10px;
+    padding: 1px 9px;
     border-radius: 20px;
   }
 
   footer {
     text-align: center;
-    margin-top: 3rem;
+    margin-top: 2rem;
     font-size: 12px;
     color: var(--muted);
     line-height: 1.7;
-  }
-
-  @media (max-width: 480px) {
-    .stats { grid-template-columns: 1fr; }
-    .card { padding: 1.25rem; }
   }
 </style>
 </head>
@@ -266,34 +316,46 @@
 
     <div class="ctrl">
       <div class="ctrl-header">
-        <label>Capital inicial</label>
-        <span class="val" id="ini-v">10.000 €</span>
+        <label for="ini-text">Capital inicial</label>
+        <div class="editable-val">
+          <input type="text" id="ini-text" value="10000" inputmode="numeric" class="wide">
+          <span class="unit">€</span>
+        </div>
       </div>
-      <input type="range" id="ini" min="0" max="50000" step="1000" value="10000">
+      <input type="range" id="ini" min="0" max="10000" step="1000" value="10000">
     </div>
 
     <div class="ctrl">
       <div class="ctrl-header">
-        <label>Aportación mensual</label>
-        <span class="val" id="apo-v">200 €</span>
+        <label for="apo-text">Aportación mensual</label>
+        <div class="editable-val">
+          <input type="text" id="apo-text" value="200" inputmode="numeric">
+          <span class="unit">€/mes</span>
+        </div>
       </div>
-      <input type="range" id="apo" min="0" max="1000" step="50" value="200">
+      <input type="range" id="apo" min="0" max="200" step="50" value="200">
     </div>
 
     <div class="ctrl">
       <div class="ctrl-header">
-        <label>Rentabilidad anual estimada</label>
-        <span class="val" id="rate-v">10%</span>
+        <label for="rate-text">Rentabilidad anual</label>
+        <div class="editable-val">
+          <input type="text" id="rate-text" value="10" inputmode="decimal" class="narrow">
+          <span class="unit">%</span>
+        </div>
       </div>
-      <input type="range" id="rate" min="1" max="20" step="0.5" value="10">
+      <input type="range" id="rate" min="1" max="10" step="0.5" value="10">
     </div>
 
-    <div class="ctrl" style="margin-bottom:0">
+    <div class="ctrl">
       <div class="ctrl-header">
-        <label>Horizonte temporal</label>
-        <span class="val" id="yrs-v">20 años</span>
+        <label for="yrs-text">Horizonte temporal</label>
+        <div class="editable-val">
+          <input type="text" id="yrs-text" value="20" inputmode="numeric" class="narrow">
+          <span class="unit">años</span>
+        </div>
       </div>
-      <input type="range" id="yrs" min="5" max="40" step="1" value="20">
+      <input type="range" id="yrs" min="1" max="20" step="1" value="20">
     </div>
   </div>
 
@@ -340,7 +402,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const fmt = v => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(v);
-const fmtShort = v => v >= 1000 ? (v/1000).toFixed(0) + 'k €' : v + ' €';
+const fmtShort = v => {
+  if (v >= 1000000) return (v/1000000).toFixed(1) + 'M €';
+  if (v >= 1000) return (v/1000).toFixed(0) + 'k €';
+  return v + ' €';
+};
 
 function calcular(ini, apo, rate, yrs) {
   const r = rate / 100 / 12;
@@ -359,16 +425,28 @@ function calcular(ini, apo, rate, yrs) {
 
 let chart;
 
-function update() {
-  const ini = +document.getElementById('ini').value;
-  const apo = +document.getElementById('apo').value;
-  const rate = +document.getElementById('rate').value;
-  const yrs = +document.getElementById('yrs').value;
+function getVals() {
+  return {
+    ini: Math.max(0, parseFloat(document.getElementById('ini-text').value) || 0),
+    apo: Math.max(0, parseFloat(document.getElementById('apo-text').value) || 0),
+    rate: Math.min(100, Math.max(0.1, parseFloat(document.getElementById('rate-text').value) || 1)),
+    yrs: Math.min(100, Math.max(1, parseInt(document.getElementById('yrs-text').value) || 1))
+  };
+}
 
-  document.getElementById('ini-v').textContent = fmt(ini);
-  document.getElementById('apo-v').textContent = fmt(apo);
-  document.getElementById('rate-v').textContent = rate.toFixed(1).replace('.0','') + '%';
-  document.getElementById('yrs-v').textContent = yrs + ' años';
+function syncSlider(id, val) {
+  const slider = document.getElementById(id);
+  if (val > +slider.max) slider.max = val;
+  slider.value = val;
+}
+
+function update() {
+  const { ini, apo, rate, yrs } = getVals();
+
+  syncSlider('ini', ini);
+  syncSlider('apo', apo);
+  syncSlider('rate', rate);
+  syncSlider('yrs', yrs);
 
   const d = calcular(ini, apo, rate, yrs);
   const finalVal = d.totalArr[d.totalArr.length-1];
@@ -402,18 +480,8 @@ function update() {
       data: {
         labels: d.labels,
         datasets: [
-          {
-            label: 'Aportado',
-            data: d.aportadoArr,
-            backgroundColor: '#4a90d9',
-            stack: 's'
-          },
-          {
-            label: 'Intereses',
-            data: d.interesesArr,
-            backgroundColor: '#1a7a5e',
-            stack: 's'
-          }
+          { label: 'Aportado', data: d.aportadoArr, backgroundColor: '#4a90d9', stack: 's' },
+          { label: 'Intereses', data: d.interesesArr, backgroundColor: '#1a7a5e', stack: 's' }
         ]
       },
       options: {
@@ -424,10 +492,7 @@ function update() {
           tooltip: {
             callbacks: {
               label: ctx => ' ' + fmt(ctx.raw),
-              footer: items => {
-                const total = items.reduce((s, i) => s + i.raw, 0);
-                return 'Total: ' + fmt(total);
-              }
+              footer: items => 'Total: ' + fmt(items.reduce((s,i) => s + i.raw, 0))
             }
           }
         },
@@ -439,11 +504,7 @@ function update() {
           },
           y: {
             stacked: true,
-            ticks: {
-              callback: v => fmtShort(v),
-              color: '#7a776e',
-              font: { size: 11 }
-            },
+            ticks: { callback: v => fmtShort(v), color: '#7a776e', font: { size: 11 } },
             grid: { color: '#e4e0d8', lineWidth: 0.5 }
           }
         }
@@ -452,7 +513,37 @@ function update() {
   }
 }
 
-['ini','apo','rate','yrs'].forEach(id => document.getElementById(id).addEventListener('input', update));
+function onSliderInput(sliderId, textId) {
+  document.getElementById(sliderId).addEventListener('input', function() {
+    document.getElementById(textId).value = this.value;
+    update();
+  });
+}
+
+function onTextInput(textId, sliderId) {
+  const text = document.getElementById(textId);
+  text.addEventListener('input', update);
+  text.addEventListener('blur', function() {
+    const v = parseFloat(this.value) || 0;
+    this.value = v;
+    syncSlider(sliderId, v);
+    update();
+  });
+  text.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { this.blur(); }
+  });
+}
+
+onSliderInput('ini', 'ini-text');
+onSliderInput('apo', 'apo-text');
+onSliderInput('rate', 'rate-text');
+onSliderInput('yrs', 'yrs-text');
+
+onTextInput('ini-text', 'ini');
+onTextInput('apo-text', 'apo');
+onTextInput('rate-text', 'rate');
+onTextInput('yrs-text', 'yrs');
+
 update();
 </script>
 </body>
